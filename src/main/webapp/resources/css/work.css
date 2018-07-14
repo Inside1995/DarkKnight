@@ -1,0 +1,33 @@
+#work-image {
+	width: 90%;
+	height: 190px;
+	margin-left: 5%;
+	border: 1px solid #EFD94A;
+	border-radius: 4px;
+}
+#start-working {
+	margin-left: 15%;
+	width: 40%;
+	padding: 10px;
+	border: 1px solid black;
+	border-radius: 4px;
+	background-color: yellow; 
+	margin-top: 20px;
+}
+#work_time {
+	width: 70%;
+	margin-left: 15%;
+	border: 1px solid #EFD94A;
+	padding: 20px;
+	font-size: 20px;
+}
+#work_panel {
+	margin: 0 auto;
+	text-align: center;
+}
+#work_panel input {
+	width: 150px;
+	border: 1px solid yellow;
+	border-radius: 4px;
+	margin: 10px;
+}

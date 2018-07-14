@@ -1,0 +1,159 @@
+package ru.artur.darkknight.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import ru.artur.darkknight.model.Condition;
+import ru.artur.darkknight.model.Knight;
+import ru.artur.darkknight.model.Statistic;
+import ru.artur.darkknight.model.User;
+import ru.artur.darkknight.model.items.Equipment;
+import ru.artur.darkknight.service.*;
+import ru.artur.darkknight.utils.FileDownloadUtil;
+
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * The main controller that handles all the requests for the main page
+ * Responsible for displaying all information about the user, and also responsible for the actions on the main page.
+ * Such as: equip a thing and remove a thing. <br/>
+ *
+ * In its composition has three services, which in turn work with dao objects to access the database: <br/>
+ * KnightService All manipulations on the knight's domain {@link Knight} <br/>
+ * EquipmentService All manipulations on the equipment's domain {@link Equipment} <br/>
+ * StatisticService All manipulations on the knight's statistic's domain {@link Statistic} <br/>
+ * ConditionService All manipulations on the knight's condition's domain {@link Condition} <br/>
+ *
+ * @author Grudtsin Artur
+ * @version 1.0
+ */
+@Controller
+@RequestMapping("/game")
+public class GameController {
+    @Autowired
+    private KnightService knightService;
+    @Autowired
+    private EquipmentService equipmentService;
+    @Autowired
+    private StatisticService statisticService;
+    @Autowired
+    private ConditionService conditionService;
+    @Autowired
+    private UserService userService;
+
+
+    /**
+     * Intercepts the request for the main page.
+     * Completely initializes the character.
+     * Adds condition to the character, if necessary.
+     *
+     * @param model It is necessary to attach all the necessary data to the model in order to display them on the pages
+     * @return the name of the page
+     */
+    @RequestMapping
+    public String main(Model model, Principal principal) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Knight myKnight = user.getKnight();
+        List<Knight> allHeroes = knightService.getAllKnights();
+        boolean conditionWasCreate = false;
+        myKnight.setHealth(100);
+        //Если герой только что был создан и у него еще нет статистики и кондиции
+        if (myKnight.getStatistic() == null) {
+            Statistic statistic = myKnight.initializeStatisticForKnight();
+            statisticService.createStatistic(statistic);
+            knightService.update(myKnight);
+        }
+        if (myKnight.getCondition() == null)
+            conditionWasCreate = true;
+
+        Condition condition = myKnight.initializeOrUpdateConditionForKnight();
+        if (conditionWasCreate)
+            conditionService.createCondition(condition);
+        else
+            conditionService.update(condition);
+
+        knightService.update(myKnight);
+        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("allHeroes", allHeroes);
+        return "main";
+    }
+
+    /**
+     * A helper method that helps to upload an avatar for equipment {@link Equipment}
+     *
+     * @param id needed to load the equipment, that need an avatar
+     * @return the avatar of the equipment returned in bytes
+     */
+    @ResponseBody
+    @RequestMapping("/get_armor_avatar/*")
+    public byte[] getArmorAvatar(@RequestParam("id") Long id) {
+        Equipment equipment = equipmentService.getEquipmentById(id);
+        if (equipment == null) {
+            byte[] bytes = FileDownloadUtil.downloadNoneAvatar();
+            return bytes;
+        }
+        return equipment.getAvatar();
+    }
+
+    /**
+     * Auxiliary method, which gives the command to the hero to equip some thing
+     *
+     * @param id the id of the Equipment need to euip {@link Equipment}
+     * @param model It is necessary to attach all the necessary data to the model in order to display them on the pages
+     * @return the name of the main page
+     */
+    @RequestMapping(value = "/equip/**", method = RequestMethod.POST)
+    public String equip(@RequestParam("id") Long id,
+                        Principal principal,
+                        Model model) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Knight myKnight = user.getKnight();
+        Equipment equipment = equipmentService.getEquipmentById(id);
+        myKnight.equip(equipment);
+        knightService.update(myKnight);
+        model.addAttribute("myKnight", myKnight);
+        return "redirect:/";
+    }
+
+    /**
+     * Auxiliary method, which gives the command to the hero to unequip some thing <br/>
+     *
+     * @param id of the equipment needed to take off the equip {@link Equipment} <br/>
+     * @param model It is necessary to attach all the necessary data to the model in order to display them on the pages <br/>
+     * @return the name of the main page <br/>
+     */
+    @RequestMapping(value = "/unequip")
+    public String unEquip(@RequestParam("id") Long id,
+                          Principal principal,
+                          Model model) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Knight myKnight = user.getKnight();
+        Equipment equipment = equipmentService.getEquipmentById(id);
+        if (equipment != null) {
+            myKnight.unEquip(equipment);
+            knightService.update(myKnight);
+        }
+        model.addAttribute("myKnight", myKnight);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/sell/**")
+    public String sell(@RequestParam("id") Long id,
+                       Principal principal) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Knight myKnight = user.getKnight();
+        Equipment equipmentById = equipmentService.getEquipmentById(id);
+        myKnight.sell(equipmentById);
+        knightService.update(myKnight);
+        return "redirect:/";
+    }
+}

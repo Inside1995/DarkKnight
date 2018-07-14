@@ -1,0 +1,17 @@
+#shop {
+	background-image: url(/resources/images/lavka.jpg);
+	height: 440px;
+	overflow: auto;
+}
+#shop table {
+	margin: 0 auto;
+	opacity: 0.9;
+}
+#buttons {
+	margin: 50px auto 0;
+	text-align: center;
+}
+#buttons input {
+	margin: 20px;
+	padding: 20px;
+}

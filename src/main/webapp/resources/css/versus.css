@@ -1,0 +1,35 @@
+#first-player, #second-player {
+	width: 200px;
+	font-size: 10px;
+}
+#first-player img, #second-player img {
+	height: 300px;
+	margin: 20px;
+}
+#first-player {
+	float: left;
+}
+#second-player {
+	float: right;
+}
+.player-info {
+    width: 100%;
+}
+#vs-image {
+	margin: 0 auto;
+	text-align: center;
+}
+#course-of-events {
+	margin: 0 auto;
+	text-align: center;
+	font-size: 1em;
+	line-height: 1.3em;
+}
+#fight-panel {
+	margin: 100px auto 20px auto;
+	text-align: center;
+}
+#fight-panel input {
+	width: 80px;
+	margin-bottom: 20px;
+}

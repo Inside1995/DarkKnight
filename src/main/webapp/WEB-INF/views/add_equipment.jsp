@@ -4,43 +4,43 @@
     <title>Add equipment</title>
 </head>
 <body>
-<form action="" method="post" enctype="multipart/form-data">
+<form action="/admin/add_equipment/upload?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
     <table style="text-align: left">
         <tr>
-            <th>Наименование</th>
+            <th>Name</th>
             <td><input type="text" name="name"></td>
         </tr>
         <tr>
-            <th>Цена</th>
+            <th>Price</th>
             <td><input type="text" name="price"></td>
         </tr>
         <tr>
-            <th>Тип</th>
+            <th>Type</th>
             <td>
                 <select name="type">
-                    <option value="helm">Шлем</option>
-                    <option value="main_armor">Основные доспехи</option>
-                    <option value="boots">Ботинки</option>
-                    <option value="jewellery">Подвеска</option>
-                    <option value="ring">Кольцо</option>
-                    <option value="weapon">Оружие</option>
+                    <option value="helm">Helm</option>
+                    <option value="main_armor">Main Armor</option>
+                    <option value="boots">Boots</option>
+                    <option value="jewellery">Jewellery</option>
+                    <option value="ring">Ring</option>
+                    <option value="weapon">Weapon</option>
                 </select>
             </td>
         </tr>
         <tr>
-            <th>Аватар</th>
+            <th>Photo</th>
             <td><input type="file" name="avatar"></td>
         </tr>
         <tr>
-            <th>Защита</th>
+            <th>Defence</th>
             <td><input type="text" name="defence"></td>
         </tr>
         <tr>
-            <th>Атака</th>
+            <th>Attack</th>
             <td><input type="text" name="attack"></td>
         </tr>
         <tr>
-            <input type="submit" value="Подтвердить">
+            <input type="submit" value="Submit">
         </tr>
     </table>
 </form>

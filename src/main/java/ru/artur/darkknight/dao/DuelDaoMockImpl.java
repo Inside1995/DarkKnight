@@ -15,11 +15,11 @@ public class DuelDaoMockImpl implements DuelDao {
     private static final Set<String> defenceActions = new HashSet<>();
 
     static {
-        attackActions.add("%s атаковал %s корытом и нанес ему %d единиц урона");
-        attackActions.add("%s ткнул вилкой %s и нанес ему %d единиц урона");
+        attackActions.add("%s attacked %s with a trough and dealt %d damage");
+        attackActions.add("%s poked with a fork %s inflicted %d damage");
 
-        defenceActions.add("%s парировал никчемный удар %s, однако получил %d единиц урона");
-        defenceActions.add("%s уклонился от удара %s, но подскользнулся и ударился головой. Получено %d единиц урона");
+        defenceActions.add("%s was parried worthless kick %s, but got %d points of damage");
+        defenceActions.add("%s evaded %s, but slipped and hit his head. %D damage received");
 
         actions.put(DuelMoveType.ATTACK, attackActions);
         actions.put(DuelMoveType.DEFENCE, defenceActions);

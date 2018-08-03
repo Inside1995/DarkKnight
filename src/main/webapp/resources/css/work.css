@@ -1,33 +1,27 @@
-#work-image {
-	width: 90%;
-	height: 190px;
-	margin-left: 5%;
-	border: 1px solid #EFD94A;
-	border-radius: 4px;
+#work {
+	margin-top: 80px;
+	margin-left: 30px;
 }
-#start-working {
-	margin-left: 15%;
-	width: 40%;
-	padding: 10px;
-	border: 1px solid black;
-	border-radius: 4px;
-	background-color: yellow; 
-	margin-top: 20px;
-}
-#work_time {
-	width: 70%;
-	margin-left: 15%;
-	border: 1px solid #EFD94A;
-	padding: 20px;
+#work span {
+	padding-right: 20px;
+	color: white;
 	font-size: 20px;
 }
-#work_panel {
-	margin: 0 auto;
-	text-align: center;
+#work img {
+	width: 200px;
+	float: left;
+	padding: 5px;
 }
-#work_panel input {
-	width: 150px;
-	border: 1px solid yellow;
-	border-radius: 4px;
-	margin: 10px;
+#work form {
+	position: relative;
+	top: -70px;
+	left: 80px;
+}
+#work_time {
+	position: relative;
+	top: -85px;
+	text-align: center;
+	color: white;
+	font-size: 50px;
+	font-weight: bold;
 }

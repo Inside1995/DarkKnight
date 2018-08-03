@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.artur.darkknight.model.Knight;
+import ru.artur.darkknight.model.Char;
 import ru.artur.darkknight.model.User;
 import ru.artur.darkknight.model.Work;
 import ru.artur.darkknight.model.items.Equipment;
@@ -15,14 +15,13 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * A controller that is responsible for all the manipulations of the work.
  * In this web application in the quality of work a campaign is used, after which the character can get gold, crystals or things {@link Equipment}.
  *
  * The controller has all the necessary services for character work, in particular:
- * a service {@link KnightService} for the character that updates the status of the character in the database,
+ * a service {@link CharService} for the character that updates the status of the character in the database,
  * the work service {@link WorkService} updates the work information of the character in the database after a successful work,
  * userService {@link UserService} is necessary in order to get an authorized user, so that the application always was secured.
  * equipmentService {@link EquipmentService} is used, because the user can get some equipment after the work is finish.
@@ -34,7 +33,7 @@ import java.util.Set;
 @RequestMapping("/work")
 public class WorkController {
     @Autowired
-    private KnightService knightService;
+    private CharService charService;
     @Autowired
     private WorkService workService;
     @Autowired
@@ -60,18 +59,18 @@ public class WorkController {
                            Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
-        if (myKnight.getWork() == null) {
+        Char myChar = user.getaChar();
+        List<Char> allHeroes = charService.getAllKnights();
+        if (myChar.getWork() == null) {
             Work work = new Work();
-            work.setKnight(myKnight);
+            work.setaChar(myChar);
             work.setGoldTaked(false);
             work.setEndTime(null);
-            myKnight.setWork(work);
+            myChar.setWork(work);
             workService.createWork(work);
-            knightService.update(myKnight);
+            charService.update(myChar);
         }
-        Date workEndTime = myKnight.getWork().getEndTime();
+        Date workEndTime = myChar.getWork().getEndTime();
         if (workEndTime != null) {
             Date now = new Date();
             if (workEndTime.getTime() < now.getTime()) {
@@ -85,7 +84,7 @@ public class WorkController {
         model.addAttribute("crystalAmount", crystalAmount);
         model.addAttribute("randomEquip", randomEquip);
 
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allHeroes", allHeroes);
         return "work";
     }
@@ -98,10 +97,10 @@ public class WorkController {
      */
     @RequestMapping(value = "/start_work/**", method = RequestMethod.POST)
     public String startWorking(@RequestParam("id") long id) {
-        Knight knightById = knightService.getKnightById(id);
-        knightById.startWork();
-        knightService.update(knightById);
-        workService.update(knightById.getWork());
+        Char charById = charService.getKnightById(id);
+        charById.startWork();
+        charService.update(charById);
+        workService.update(charById.getWork());
         return "redirect:/work";
     }
 
@@ -118,23 +117,23 @@ public class WorkController {
                           Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
+        Char myChar = user.getaChar();
         Random random = new Random();
-        if (myKnight.getWork().getEndTime().getTime() < new Date().getTime()) {
+        if (myChar.getWork().getEndTime().getTime() < new Date().getTime()) {
             int goldAmount = random.nextInt(100);
-            myKnight.addGold(goldAmount);
+            myChar.addGold(goldAmount);
             int crystalAmount = random.nextInt(5);
-            myKnight.addCrystal(crystalAmount);
+            myChar.addCrystal(crystalAmount);
             int getEquip = random.nextInt(10);
             if (getEquip == 1) {
                 Equipment randomEquip = equipmentService.getAllEquipments().iterator().next();
-                myKnight.putInBag(randomEquip);
+                myChar.putInBag(randomEquip);
                 model.addAttribute("randomEquip", randomEquip);
             }
             model.addAttribute("goldAmount", goldAmount);
             model.addAttribute("crystalAmount", crystalAmount);
-            knightService.update(myKnight);
-            workService.update(myKnight.getWork());
+            charService.update(myChar);
+            workService.update(myChar.getWork());
         }
         return "redirect:/work";
     }

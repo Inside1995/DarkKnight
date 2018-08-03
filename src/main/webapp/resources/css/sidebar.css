@@ -1,0 +1,29 @@
+#sidebar {
+	background: url('../images/sidebar_border.png');
+	height: 500px;
+	width: 300px;
+	background-color: #352D27;
+	margin-bottom: 20px;
+	float: left;
+}
+#nav {
+	padding-top: 10px;
+	float: left;
+	font-size: 30px;
+	text-align: center;
+	padding-left: 35px;
+}
+#nav ul {
+	width: 160px;
+	padding-left: 19px;
+}
+ #sidebar ul li {
+    list-style-type: none; /* Убираем маркеры */
+ }
+ #sidebar a {
+ 	color: white;
+ }
+ #sidebar a:hover {
+ 	color: yellow;
+ 	font-size: 32px;
+ }

@@ -19,7 +19,7 @@ public class User {
     private Set<Role> roles;
     @OneToOne
     @JoinColumn(name = "knight_id")
-    private Knight knight;
+    private Char aChar;
 
     public Long getId() {
         return id;
@@ -61,11 +61,11 @@ public class User {
         this.roles = roles;
     }
 
-    public Knight getKnight() {
-        return knight;
+    public Char getaChar() {
+        return aChar;
     }
 
-    public void setKnight(Knight knight) {
-        this.knight = knight;
+    public void setaChar(Char aChar) {
+        this.aChar = aChar;
     }
 }

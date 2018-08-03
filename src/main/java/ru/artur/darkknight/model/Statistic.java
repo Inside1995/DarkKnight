@@ -19,7 +19,7 @@ public class Statistic {
     private BigDecimal winPercentage = BigDecimal.ZERO;
 
     @OneToOne(mappedBy = "statistic")
-    private Knight knight;
+    private Char aChar;
 
     public int getTotalBattle() {
         return totalBattle;
@@ -53,8 +53,8 @@ public class Statistic {
         this.winPercentage = winPercentage;
     }
 
-    public void setKnight(Knight knight) {
-        this.knight = knight;
+    public void setaChar(Char aChar) {
+        this.aChar = aChar;
     }
 
     public Long getId() {
@@ -65,7 +65,7 @@ public class Statistic {
         this.id = id;
     }
 
-    public Knight getKnight() {
-        return knight;
+    public Char getaChar() {
+        return aChar;
     }
 }

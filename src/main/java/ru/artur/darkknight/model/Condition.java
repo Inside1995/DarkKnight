@@ -16,7 +16,7 @@ public class Condition {
     private Date lastUpdateTime;
 
     @OneToOne(mappedBy = "condition")
-    private Knight knight;
+    private Char aChar;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class Condition {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-    public Knight getKnight() {
-        return knight;
+    public Char getaChar() {
+        return aChar;
     }
 
-    public void setKnight(Knight knight) {
-        this.knight = knight;
+    public void setaChar(Char aChar) {
+        this.aChar = aChar;
     }
 }

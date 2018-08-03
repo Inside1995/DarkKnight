@@ -4,19 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.artur.darkknight.model.Char;
 import ru.artur.darkknight.model.Condition;
-import ru.artur.darkknight.model.Knight;
 import ru.artur.darkknight.model.Statistic;
 import ru.artur.darkknight.model.User;
 import ru.artur.darkknight.model.items.Equipment;
 import ru.artur.darkknight.service.*;
 import ru.artur.darkknight.utils.FileDownloadUtil;
 
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The main controller that handles all the requests for the main page
@@ -24,7 +22,7 @@ import java.util.Set;
  * Such as: equip a thing and remove a thing. <br/>
  *
  * In its composition has three services, which in turn work with dao objects to access the database: <br/>
- * KnightService All manipulations on the knight's domain {@link Knight} <br/>
+ * CharService All manipulations on the knight's domain {@link Char} <br/>
  * EquipmentService All manipulations on the equipment's domain {@link Equipment} <br/>
  * StatisticService All manipulations on the knight's statistic's domain {@link Statistic} <br/>
  * ConditionService All manipulations on the knight's condition's domain {@link Condition} <br/>
@@ -36,7 +34,7 @@ import java.util.Set;
 @RequestMapping("/game")
 public class GameController {
     @Autowired
-    private KnightService knightService;
+    private CharService charService;
     @Autowired
     private EquipmentService equipmentService;
     @Autowired
@@ -59,27 +57,29 @@ public class GameController {
     public String main(Model model, Principal principal) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
+        Char myChar = user.getaChar();
         boolean conditionWasCreate = false;
-        myKnight.setHealth(100);
+        myChar.setHealth(100);
         //Если герой только что был создан и у него еще нет статистики и кондиции
-        if (myKnight.getStatistic() == null) {
-            Statistic statistic = myKnight.initializeStatisticForKnight();
+        if (myChar.getStatistic() == null) {
+            Statistic statistic = myChar.initializeStatisticForChar();
             statisticService.createStatistic(statistic);
-            knightService.update(myKnight);
+            charService.update(myChar);
         }
-        if (myKnight.getCondition() == null)
+        if (myChar.getCondition() == null)
             conditionWasCreate = true;
 
-        Condition condition = myKnight.initializeOrUpdateConditionForKnight();
+        Condition condition = myChar.initializeOrUpdateConditionForChar();
         if (conditionWasCreate)
             conditionService.createCondition(condition);
         else
             conditionService.update(condition);
 
-        knightService.update(myKnight);
-        model.addAttribute("myKnight", myKnight);
+        charService.update(myChar);
+
+        List<Char> allHeroes = charService.getAllKnights();
+
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allHeroes", allHeroes);
         return "main";
     }
@@ -91,11 +91,12 @@ public class GameController {
      * @return the avatar of the equipment returned in bytes
      */
     @ResponseBody
-    @RequestMapping("/get_armor_avatar/*")
-    public byte[] getArmorAvatar(@RequestParam("id") Long id) {
+    @RequestMapping("/get_armor_avatar/**")
+    public byte[] getArmorAvatar(@RequestParam("id") Long id,
+                                 @RequestParam("type") String type) {
         Equipment equipment = equipmentService.getEquipmentById(id);
         if (equipment == null) {
-            byte[] bytes = FileDownloadUtil.downloadNoneAvatar();
+            byte[] bytes = FileDownloadUtil.downloadNoneAvatar(type);
             return bytes;
         }
         return equipment.getAvatar();
@@ -114,11 +115,11 @@ public class GameController {
                         Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
+        Char myChar = user.getaChar();
         Equipment equipment = equipmentService.getEquipmentById(id);
-        myKnight.equip(equipment);
-        knightService.update(myKnight);
-        model.addAttribute("myKnight", myKnight);
+        myChar.equip(equipment);
+        charService.update(myChar);
+        model.addAttribute("myKnight", myChar);
         return "redirect:/";
     }
 
@@ -135,13 +136,13 @@ public class GameController {
                           Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
+        Char myChar = user.getaChar();
         Equipment equipment = equipmentService.getEquipmentById(id);
         if (equipment != null) {
-            myKnight.unEquip(equipment);
-            knightService.update(myKnight);
+            myChar.unEquip(equipment);
+            charService.update(myChar);
         }
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myKnight", myChar);
         return "redirect:/";
     }
 
@@ -150,10 +151,23 @@ public class GameController {
                        Principal principal) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
+        Char myChar = user.getaChar();
         Equipment equipmentById = equipmentService.getEquipmentById(id);
-        myKnight.sell(equipmentById);
-        knightService.update(myKnight);
-        return "redirect:/";
+        myChar.sell(equipmentById);
+        charService.update(myChar);
+        return "redirect:/shop/sell_page";
+    }
+
+    @RequestMapping(value = "/statistic")
+    public String statistic(Model model,
+                            Principal principal) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Char myChar = user.getaChar();
+        List<Char> allKnights = charService.getAllKnights();
+        Collections.sort(allKnights, (o1, o2) -> o2.getStatistic().getWinPercentage().compareTo(o1.getStatistic().getWinPercentage()));
+        model.addAttribute("allHeroes", allKnights);
+        model.addAttribute("myChar", myChar);
+        return "statistic";
     }
 }

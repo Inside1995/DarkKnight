@@ -1,17 +1,70 @@
 #shop {
-	background-image: url(/resources/images/lavka.jpg);
-	height: 440px;
+	margin-top: 80px;
+	margin-left: 30px;
+}
+#shop img {
+	height: 282px;
+	float: left;
+	padding: 5px;
+	width: 200px;
+}
+#shop span {
+	padding-right: 15px;
+	font-size: 20px;
+	color: white;
+}
+#buy_sell_panel {
+	position: relative;
+	top: -70px;
+	left: 149px;
+}
+#buy_sell_panel img {
+	width: 100px;
+	height: 100px;
+	padding-right: 35px;
+}
+#buy_page {
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 150px;
+}
+#shop-container {
+	margin-top: 90px;
+	text-align: center;
+	margin-left: 40px;
+	margin-right: 40px;
+	height: 360px;
 	overflow: auto;
 }
-#shop table {
-	margin: 0 auto;
-	opacity: 0.9;
+#shop-container table {
+	width: 100%;
+	color: white;
 }
-#buttons {
-	margin: 50px auto 0;
-	text-align: center;
+#shop-container input {
+	background-color: yellow;
+	border-radius: 5px;
+	color: black;
+	height: 25px;
 }
-#buttons input {
-	margin: 20px;
-	padding: 20px;
+#errors {
+    background-color: yellow;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 5px;
+    border-radius: 5px;
+    opacity: 0.7;
+}
+#tooltip {
+	z-index: 9999;
+	position: absolute;
+	display: none;
+	top:0px;
+	left:0px;
+	width: 250px;
+	background-color: #EFD94A;
+	padding: 5px 10px 5px 10px;
+	color: #000;
+	border: 1px solid #888;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px #555;
 }

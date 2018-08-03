@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 html { 
-  background: url(/resources/images/background.jpg) no-repeat center center fixed;
+  background: url(/resources/images/fon_demo.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

@@ -1,0 +1,21 @@
+DELETE FROM knight_bag;
+DELETE FROM knight_helm;
+DELETE FROM knight_main_armor;
+DELETE FROM knight_weapon;
+DELETE FROM armor;
+DELETE FROM weapon;
+DELETE FROM equipment;
+
+DELETE FROM user_role;
+DELETE FROM user;
+DELETE FROM knight_bag;
+DELETE FROM knight_helm;
+DELETE FROM knight_main_armor;
+DELETE FROM knight_weapon;
+DELETE FROM knight_boots;
+DELETE FROM knight_jewellery;
+DELETE FROM knight_ring;
+DELETE FROM knight_condition;
+DELETE FROM work;
+DELETE FROM statistic;
+DELETE FROM knight;

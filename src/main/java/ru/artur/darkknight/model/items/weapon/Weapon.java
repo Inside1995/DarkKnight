@@ -32,6 +32,8 @@ public class Weapon extends Equipment {
 
     @Override
     public String toString() {
-        return String.format("Название: %s\nАтака: %d\nВыносливость: %d", this.getName(), this.getAttack(), this.getStamina());
+        return String.format("Название: %s <br/>" +
+                "Атака: %d <br/>" +
+                "Выносливость: %d", this.getName(), this.getAttack(), this.getStamina());
     }
 }

@@ -18,11 +18,9 @@ public class UserHibernateRepository implements UserRepository {
     @Override
     public User findByUsername(String username) {
         Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(User.class).setFetchMode("twitts", FetchMode.JOIN).setFetchMode("friends", FetchMode.JOIN);
-        List<User> userList = criteria.add(Restrictions.eq("username", username)).list();
-        User user = null;
-        if (userList != null && userList.size() > 0)
-            user = userList.get(0);
+        User user = (User) session.createQuery("from User u where u.username=:username")
+                .setParameter("username", username)
+                .uniqueResult();
         return user;
     }
 

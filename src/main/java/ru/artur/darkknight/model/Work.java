@@ -16,7 +16,7 @@ public class Work {
     private boolean goldTaked;
 
     @OneToOne(mappedBy = "work")
-    private Knight knight;
+    private Char aChar;
 
     public Long getId() {
         return id;
@@ -42,12 +42,12 @@ public class Work {
         this.goldTaked = goldTaked;
     }
 
-    public Knight getKnight() {
-        return knight;
+    public Char getaChar() {
+        return aChar;
     }
 
-    public void setKnight(Knight knight) {
-        this.knight = knight;
+    public void setaChar(Char aChar) {
+        this.aChar = aChar;
     }
 
     @Override

@@ -31,8 +31,11 @@ public class Armor extends Equipment {
         this.defence = defence;
     }
 
+    //Оформлено специально для корректного отображения на html странице. Использованы HTML теги.
     @Override
     public String toString() {
-        return String.format("Название: %s\nЗащита: %d\nВыносливость: %d", this.getName(), this.getDefence(), this.getStamina());
+        return String.format("Название: %s <br/>" +
+                "Защита: %d <br/>" +
+                "Выносливость: %d", this.getName(), this.getDefence(), this.getStamina());
     }
 }

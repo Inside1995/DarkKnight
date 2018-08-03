@@ -4,21 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.artur.darkknight.model.Knight;
-import ru.artur.darkknight.model.Statistic;
+import ru.artur.darkknight.model.Char;
 import ru.artur.darkknight.model.User;
 import ru.artur.darkknight.model.enums.DuelMoveType;
 import ru.artur.darkknight.model.enums.DuelResult;
 import ru.artur.darkknight.service.DuelService;
-import ru.artur.darkknight.service.KnightService;
+import ru.artur.darkknight.service.CharService;
 import ru.artur.darkknight.service.StatisticService;
 import ru.artur.darkknight.service.UserService;
 import ru.artur.darkknight.utils.HelpService;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 
 /**
@@ -32,7 +30,7 @@ import java.util.Set;
 @RequestMapping("/duel")
 public class DuelController {
     @Autowired
-    private KnightService knightService;
+    private CharService charService;
     @Autowired
     private DuelService duelService;
     @Autowired
@@ -52,10 +50,10 @@ public class DuelController {
                            Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allKnights = knightService.getAllKnights();
-        model.addAttribute("myKnight", myKnight);
-        model.addAttribute("allHeroes", allKnights);
+        Char myChar = user.getaChar();
+        List<Char> allChars = charService.getAllKnights();
+        model.addAttribute("myChar", myChar);
+        model.addAttribute("allHeroes", allChars);
         return "duel";
     }
 
@@ -73,17 +71,67 @@ public class DuelController {
     public String duelVersus(@RequestParam("opponent_id") long id,
                              Principal principal,
                              Model model) {
-        Knight opponent = knightService.getKnightById(id);
+        Char opponent = charService.getKnightById(id);
         opponent.setHealth(100);
-        knightService.update(opponent);
+        charService.update(opponent);
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
+        Char myChar = user.getaChar();
+        List<Char> allHeroes = charService.getAllKnights();
         model.addAttribute("opponent", opponent);
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allHeroes", allHeroes);
         return "versus";
+    }
+
+    @RequestMapping(value = "/start_fighting/**")
+    public String startFighting(@RequestParam("opponent_id") Long id, Principal principal, Model model) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Char myChar = user.getaChar();
+        Char opponent = charService.getKnightById(id);
+        boolean game = true;
+        List<String> history = new ArrayList<>();
+        while (game) {
+            DuelMoveType type = DuelMoveType.values()[(int) (Math.random() * 2)];
+            String myAction = duelService.findAction(type);
+            int random = (int) (Math.random() * 2);
+            String opponentAction = duelService.findAction(random == 1 ? DuelMoveType.ATTACK : DuelMoveType.DEFENCE);
+
+            int myDamage = HelpService.getDamage(myChar, opponent);
+            int opponentDamage = HelpService.getDamage(opponent, myChar);
+
+            myAction = String.format(myAction, "<b>" + myChar.getName() + "</b>", "<b>" + opponent.getName() + "</b>", myDamage);
+            opponentAction = String.format(opponentAction, "<b>" + opponent.getName() + "</b>", "<b>" + myChar.getName() + "</b>", opponentDamage);
+            history.add(myAction);
+            history.add(opponentAction);
+            myChar.setHealth(myChar.getHealth() - opponentDamage);
+            opponent.setHealth(opponent.getHealth() - myDamage);
+
+            if (opponent.getHealth() <= 0 || myChar.getHealth() <= 0) {
+                boolean iWin = opponent.getHealth() < myChar.getHealth();
+                if (iWin) {
+                    myChar.updateStatistic(DuelResult.WIN);
+                    opponent.updateStatistic(DuelResult.LOSE);
+                } else {
+                    myChar.updateStatistic(DuelResult.LOSE);
+                    opponent.updateStatistic(DuelResult.WIN);
+                }
+                statisticService.update(myChar.getStatistic());
+                statisticService.update(opponent.getStatistic());
+                game = false;
+                model.addAttribute("iWin", iWin);
+                if (myChar.getHealth() < 0)
+                    myChar.setHealth(0);
+                if (opponent.getHealth() < 0)
+                    opponent.setHealth(0);
+            }
+        }
+        charService.update(myChar);
+        charService.update(opponent);
+        model.addAttribute("history", history);
+        model.addAttribute("myChar", myChar);
+        return "duel_history";
     }
 
     /**
@@ -103,34 +151,34 @@ public class DuelController {
         DuelMoveType type = DuelMoveType.getTypeByString(param);
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        Knight opponentKnight = userService.findByUsername(opponentName).getKnight();
+        Char myChar = user.getaChar();
+        Char opponentChar = userService.findByUsername(opponentName).getaChar();
         String myAction = duelService.findAction(type);
         int random = 2;
         String opponentAction = duelService.findAction(random == 1 ? DuelMoveType.ATTACK : DuelMoveType.DEFENCE);
 
-        int myDamage = HelpService.getDamage(myKnight, opponentKnight);
-        int opponentDamage = HelpService.getDamage(opponentKnight, myKnight);
+        int myDamage = HelpService.getDamage(myChar, opponentChar);
+        int opponentDamage = HelpService.getDamage(opponentChar, myChar);
 
-        myAction = String.format(myAction, myKnight.getName(), opponentKnight.getName(), myDamage);
-        opponentAction = String.format(opponentAction, opponentKnight.getName(), myKnight.getName(), opponentDamage);
-        myKnight.setHealth(myKnight.getHealth() - opponentDamage);
-        opponentKnight.setHealth(opponentKnight.getHealth() - myDamage);
+        myAction = String.format(myAction, myChar.getName(), opponentChar.getName(), myDamage);
+        opponentAction = String.format(opponentAction, opponentChar.getName(), myChar.getName(), opponentDamage);
+        myChar.setHealth(myChar.getHealth() - opponentDamage);
+        opponentChar.setHealth(opponentChar.getHealth() - myDamage);
 
-        if (opponentKnight.getHealth() <= 0 || myKnight.getHealth() <= 0) {
-            boolean iWin = opponentKnight.getHealth() < myKnight.getHealth();
+        if (opponentChar.getHealth() <= 0 || myChar.getHealth() <= 0) {
+            boolean iWin = opponentChar.getHealth() < myChar.getHealth();
             if (iWin) {
-                myKnight.updateStatistic(DuelResult.WIN);
-                opponentKnight.updateStatistic(DuelResult.LOSE);
+                myChar.updateStatistic(DuelResult.WIN);
+                opponentChar.updateStatistic(DuelResult.LOSE);
             } else {
-                myKnight.updateStatistic(DuelResult.LOSE);
-                opponentKnight.updateStatistic(DuelResult.WIN);
+                myChar.updateStatistic(DuelResult.LOSE);
+                opponentChar.updateStatistic(DuelResult.WIN);
             }
-            statisticService.update(myKnight.getStatistic());
-            statisticService.update(opponentKnight.getStatistic());
+            statisticService.update(myChar.getStatistic());
+            statisticService.update(opponentChar.getStatistic());
         }
-        knightService.update(myKnight);
-        knightService.update(opponentKnight);
-        return myAction + ". " + opponentAction + "\n" + myKnight.getHealth() + ":" + opponentKnight.getHealth();
+        charService.update(myChar);
+        charService.update(opponentChar);
+        return myAction + ". " + opponentAction + "\n" + myChar.getHealth() + ":" + opponentChar.getHealth();
     }
 }

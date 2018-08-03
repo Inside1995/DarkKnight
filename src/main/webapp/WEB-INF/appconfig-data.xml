@@ -22,7 +22,7 @@
                 <value>ru.artur.darkknight.model.items.Equipment</value>
                 <value>ru.artur.darkknight.model.items.armor.Armor</value>
                 <value>ru.artur.darkknight.model.items.weapon.Weapon</value>
-                <value>ru.artur.darkknight.model.Knight</value>
+                <value>ru.artur.darkknight.model.Char</value>
                 <value>ru.artur.darkknight.model.Statistic</value>
                 <value>ru.artur.darkknight.model.Work</value>
                 <value>ru.artur.darkknight.model.Condition</value>

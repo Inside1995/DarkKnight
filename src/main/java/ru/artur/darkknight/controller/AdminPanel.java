@@ -50,7 +50,7 @@ public class AdminPanel {
      * @param attack the attack of the new equipment
      * @return the name of the view page
      */
-    @RequestMapping(value = "add_equipment", method = RequestMethod.POST)
+    @RequestMapping(value = "add_equipment/**", method = RequestMethod.POST)
     public String addEquipment(@RequestParam("name") String name,
                                @RequestParam("price") BigDecimal price,
                                @RequestParam("type") String type,

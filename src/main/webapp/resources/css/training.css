@@ -1,40 +1,30 @@
-#skills-training {
-	width: 100%;
-	font-size: 10px;
+#training {
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 40px;
 }
-#skills-training select {
-	max-width: 550px;
+#training table {
+	width: 80%;
+	font-size: 20px;
+	margin: 0 auto;
 }
-#skills-training img{
-	height: 20px;
-	width: 20px;
+#training d {
+	position: relative;
+	top: -4px;
+	padding-right: 6px;
 }
-#skills-training table td, #skills-training table th {
-	background-color: #73552B;
-	padding: 8px;
-	border: 1px solid #EFD94A;
+#training input {
+	background-color: yellow;
+	border-radius: 5px;
+	color: black;
+	position: relative;
+	top: -4px;
 }
-table th {
-	background-color: #73552B;
-	padding: 8px;
-	border: 3px solid #EFD94A;
-}
-#start-training {
-	margin: 10px;
-	margin-bottom: 5px;
-	float: right;
-}
-#training-image img {
-	width: 90%;
-	height: 190px;
-	margin-left: 5%;
-	border: 1px solid #EFD94A;
-	border-radius: 4px;
-}
-#errors {
-	color: red;
-	border: 3px solid #EFD94A;
-	background-color: #73552B;
-	margin: 2px;
-	padding: 5px;
+#error-panel {
+	background-color: yellow;
+	margin-left: 40px;
+	margin-right: 40px;
+	margin-top: 5px;
+	border-radius: 5px;
+	opacity: 0.7;
 }

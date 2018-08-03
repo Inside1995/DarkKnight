@@ -3,17 +3,16 @@ package ru.artur.darkknight.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.artur.darkknight.exception.GoldNotEnoughException;
-import ru.artur.darkknight.model.Knight;
+import ru.artur.darkknight.model.Char;
 import ru.artur.darkknight.model.User;
 import ru.artur.darkknight.model.items.Equipment;
 import ru.artur.darkknight.model.items.armor.Armor;
 import ru.artur.darkknight.model.items.weapon.Weapon;
 import ru.artur.darkknight.service.EquipmentService;
-import ru.artur.darkknight.service.KnightService;
+import ru.artur.darkknight.service.CharService;
 import ru.artur.darkknight.service.UserService;
 
 import java.security.Principal;
@@ -31,7 +30,7 @@ import java.util.Set;
 @RequestMapping("/shop")
 public class ShopController {
     @Autowired
-    private KnightService knightService;
+    private CharService charService;
     @Autowired
     private EquipmentService equipmentService;
     @Autowired
@@ -41,7 +40,7 @@ public class ShopController {
      * Intercepts the request and sends the user to the main page of the store, where the user has to select the category of the desired product.
      *
      * @param principal Object for getting authorized user.
-     * @param model The object needed to add parameters to the response.
+     * @param model     The object needed to add parameters to the response.
      * @return the name of the view page.
      */
     @RequestMapping
@@ -49,21 +48,41 @@ public class ShopController {
                            Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
+        Char myChar = user.getaChar();
+        List<Char> allHeroes = charService.getAllKnights();
         Set<Equipment> allEquipments = equipmentService.getAllEquipments();
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allItems", allEquipments);
         model.addAttribute("allHeroes", allHeroes);
         return "shop";
+    }
+
+    @RequestMapping("/buy_page")
+    public String buyPage(Principal principal,
+                          Model model) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Char myChar = user.getaChar();
+        model.addAttribute("myChar", myChar);
+        return "buy_page";
+    }
+
+    @RequestMapping("/sell_page")
+    public String sellPage(Principal principal,
+                           Model model) {
+        String name = principal.getName();
+        User user = userService.findByUsername(name);
+        Char myChar = user.getaChar();
+        model.addAttribute("myChar", myChar);
+        return "sell_page";
     }
 
     /**
      * The method enlists the purchased item if it has enough money and takes the necessary amount from it
      *
      * @param principal Object for getting authorized user.
-     * @param itemID The id of the object need to buy.
-     * @param model The object needed to add parameters to the response.
+     * @param itemID    The id of the object need to buy.
+     * @param model     The object needed to add parameters to the response.
      * @return the name of the view page.
      */
     @RequestMapping("/buy/**")
@@ -72,35 +91,39 @@ public class ShopController {
                           Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
+        Char myChar = user.getaChar();
         Equipment equipmentById = equipmentService.getEquipmentById(itemID);
         try {
-            myKnight.buy(equipmentById);
-            knightService.update(myKnight);
+            myChar.buy(equipmentById);
+            charService.update(myChar);
         } catch (GoldNotEnoughException e) {
             model.addAttribute("exception", e.getMessage());
         }
-        return "redirect:/shop";
+        String whereToGo = (equipmentById instanceof Armor) ? "/getArmors" : "/getWeapons";
+        return "redirect:/shop" + whereToGo;
     }
 
     /**
      * The method gives the user a complete list of all available weapons that are in the game.
      *
      * @param principal Object for getting authorized user.
-     * @param model The object needed to add parameters to the response.
+     * @param model     The object needed to add parameters to the response.
      * @return the name of the view page.
      */
     @RequestMapping("/getWeapons/**")
     public String getWeapons(Principal principal,
+                             @RequestParam(value = "exception", required = false) String exception,
                              Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
+        Char myChar = user.getaChar();
+        List<Char> allHeroes = charService.getAllKnights();
         Set<Weapon> allWeapons = equipmentService.getAllWeapons();
         model.addAttribute("weaponItems", allWeapons);
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allHeroes", allHeroes);
+        if (exception != null && !exception.equals(""))
+            model.addAttribute("exception", exception);
         return "shop_item_list";
     }
 
@@ -108,20 +131,23 @@ public class ShopController {
      * The method gives the user a complete list of all available armors that are in the game.
      *
      * @param principal Object for getting authorized user.
-     * @param model The object needed to add parameters to the response.
+     * @param model     The object needed to add parameters to the response.
      * @return the name of the view page.
      */
     @RequestMapping("/getArmors/**")
     public String getArmors(Principal principal,
-                             Model model) {
+                            @RequestParam(value = "exception", required = false) String exception,
+                            Model model) {
         String name = principal.getName();
         User user = userService.findByUsername(name);
-        Knight myKnight = user.getKnight();
-        List<Knight> allHeroes = knightService.getAllKnights();
+        Char myChar = user.getaChar();
+        List<Char> allHeroes = charService.getAllKnights();
         Set<Armor> allArmors = equipmentService.getAllArmors();
         model.addAttribute("armorItems", allArmors);
-        model.addAttribute("myKnight", myKnight);
+        model.addAttribute("myChar", myChar);
         model.addAttribute("allHeroes", allHeroes);
+        if (exception != null && !exception.equals(""))
+            model.addAttribute("exception", exception);
         return "shop_item_list";
     }
 }

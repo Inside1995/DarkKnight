@@ -1,6 +1,6 @@
 package ru.artur.darkknight.model.items;
 
-import ru.artur.darkknight.model.Knight;
+import ru.artur.darkknight.model.Char;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,7 +22,7 @@ public abstract class Equipment implements Serializable {
     private int stamina;
 
     @ManyToMany(mappedBy = "bag")
-    private Set<Knight> knights;
+    private Set<Char> aChars;
 
     public Equipment() {
     }

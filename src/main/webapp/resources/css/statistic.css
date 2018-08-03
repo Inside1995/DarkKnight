@@ -1,0 +1,20 @@
+#rating {
+    margin-top: 80px;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+#rating table {
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 15px;
+}
+#rating table td {
+    border: 1px solid yellow;
+    border-radius: 5px;
+}
+#rating img {
+    width: 30px;
+    height: 30px;
+    padding-top: 4px;
+}

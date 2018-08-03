@@ -1,0 +1,57 @@
+#person-equip {
+	padding-top: 60px;
+	padding-left: 30px;
+	float: left;
+}
+#person-equip td, #inventory td {
+	border: 1px solid yellow;
+	padding: 10px;
+	background-color: #655C55; 
+	border-radius: 5px;
+}
+#person-equip table img {
+	height: 50px;
+	width: 50px;
+	padding: 5px;
+}
+#inventory {
+	margin-top: 65px;
+	margin-left: 378px;
+	max-height: 285px;
+	overflow: auto;
+}
+#inventory td img {
+	width: 50px;
+	height: 50px;
+}
+#person-info {
+	position: relative;
+	top: 10px;
+	left: 30px;
+	font-size: 30px;
+	color: white;
+	overflow: hidden;
+}
+#person-info {
+	width: 514px;
+}
+#person-info table {
+	width: 100%;
+}
+#person-info td, #person-info th {
+	padding: 5px;
+}
+#tooltip {
+	z-index: 9999;
+	position: absolute;
+	display: none;
+	top:0px;
+	left:0px;
+	width: 250px;
+	background-color: #EFD94A;
+	padding: 5px 10px 5px 10px;
+	color: #000;
+	border: 1px solid #888;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px #555;
+}

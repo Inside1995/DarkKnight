@@ -1,0 +1,1 @@
+A simple browser-based game written in Java, and using the Spring framework. The essence of the game is that the user can choose one of the classes available in the game, and through training and new things to strengthen it. The user can engage in battle with other users.
